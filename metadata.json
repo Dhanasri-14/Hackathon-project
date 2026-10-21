@@ -1,0 +1,6 @@
+{
+  "name": "UyirThunai",
+  "description": "Emergency Blood Requirement and Donor Coordination System & Pharmacy Prescription Fulfilment and Medicine Delivery System.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
