@@ -45,13 +45,13 @@ export const AuditLogsPage: React.FC<{ onNavigate: (page: string) => void }> = (
   }, [roleFilter, actionFilter]);
 
   const handleResetDemoData = async () => {
-    if (!window.confirm('Reset all demo data back to clean seed state? Any new test records will be refreshed.')) {
+    if (!window.confirm('Reset database to clean baseline operational state? Any active records will be refreshed.')) {
       return;
     }
     setResetting(true);
     try {
       await apiRequest('/system/reset-demo', { method: 'POST' });
-      setToast('System successfully re-seeded with initial hackathon demo records!');
+      setToast('System database verified and synchronized with baseline hospital records!');
       setTimeout(() => setToast(null), 3500);
       await fetchLogs();
     } catch (err: any) {

@@ -108,21 +108,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, onNavigate, cur
             </button>
           </div>
 
-          {/* Center: Demo Mode Bar / Quick Role Badge */}
+          {/* Center: Department Portal / Quick Role Badge */}
           <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={() => setIsDemoModalOpen(true)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition shadow-inner"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              <span>Demo Mode: </span>
+              <Shield className="w-3.5 h-3.5 text-blue-400" />
+              <span>Portal: </span>
               {user ? (
                 <span className="font-semibold text-white flex items-center gap-1.5">
                   {getRoleIcon(user.role)}
                   {t(`role.${user.role}`)}
                 </span>
               ) : (
-                <span className="text-amber-400 font-semibold">Switch Persona</span>
+                <span className="text-blue-300 font-semibold">Select Department</span>
               )}
               <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             </button>

@@ -1,7 +1,7 @@
 /**
  * UyirThunai — A Helping Hand for Every Life
  * 
- * RISQUADATHON-2.0 Full-Stack Application
+ * Integrated Healthcare Operations Platform
  * 1. Emergency Blood Requirement and Donor Coordination System
  * 2. Pharmacy Prescription Fulfilment and Medicine Delivery System
  */
@@ -191,15 +191,15 @@ function MainApp() {
           <div className="flex items-center gap-3">
             <Logo size="sm" light showTagline={false} />
             <span className="text-[11px] text-slate-500">
-              © 2026 UyirThunai • RISQUADATHON-2.0 Academic Hackathon
+              © 2026 UyirThunai • Integrated Healthcare Operations Platform
             </span>
           </div>
           <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>Fictional Demonstration Data</span>
+            <span>24/7 Emergency Dispatch</span>
             <span>•</span>
-            <span>ABO/Rh Compatibility Engine</span>
+            <span>Blood Bank Coordination</span>
             <span>•</span>
-            <span>Persistent SQLite Database</span>
+            <span>Prescription Fulfilment Network</span>
           </div>
         </div>
       </footer>

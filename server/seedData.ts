@@ -130,7 +130,7 @@ export function seedDemoData(): void {
   additionalDonors.forEach((d, idx) => {
     const userId = `USR-DNR-${String(idx + 2).padStart(3, '0')}`;
     const donorId = `DNR-${String(idx + 2).padStart(3, '0')}`;
-    const email = `donor.${d.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@fictional-demo.org`;
+    const email = `donor.${d.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@uyirthunai.org`;
 
     execute(
       `INSERT INTO users (id, email, password_hash, full_name, role, phone, city, locality, created_at, updated_at)

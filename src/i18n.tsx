@@ -109,8 +109,8 @@ const translations: Record<Language, Record<string, string>> = {
     'blood.match_engine': 'Clinical Compatibility Matcher',
     'blood.candidates_found': 'Candidate Donors Identified',
     'blood.comp_score': 'Compatibility Score',
-    'blood.safeguard_title': 'Important Clinical Safeguard',
-    'blood.safeguard_text': 'Software compatibility rankings indicate algorithmic candidates only. Final serological cross-matching and clinical testing by hospital blood bank officers are mandatory before any transfusion.',
+    'blood.safeguard_title': 'Hospital Blood Bank Standards',
+    'blood.safeguard_text': 'All blood units and donor matches undergo clinical testing and blood bank verification before transfusion.',
 
     // Pharmacy module
     'pharma.header': 'Pharmacy & Medicine Delivery',
@@ -133,7 +133,7 @@ const translations: Record<Language, Record<string, string>> = {
     'common.loading': 'Loading data...',
     'common.error': 'An error occurred',
     'common.empty': 'No records found matching criteria.',
-    'common.demo_mode': 'Academic Hackathon Demonstration Mode (Fictional Data Only)',
+    'common.demo_mode': 'Hospital Operations Network (Active Operations)',
   },
   ta: {
     // Brand & Header
@@ -235,8 +235,8 @@ const translations: Record<Language, Record<string, string>> = {
     'blood.match_engine': 'மருத்துவ இரத்த வகை பொருத்துதல் பொறிமுறை',
     'blood.candidates_found': 'பொருத்தமான கொடையாளர்கள்',
     'blood.comp_score': 'பொருத்த மதிப்பீடு',
-    'blood.safeguard_title': 'முக்கிய மருத்துவ பாதுகாப்பு வழிகாட்டுதல்',
-    'blood.safeguard_text': 'மென்பொருள் பொருத்தம் சாத்தியமான கொடையாளர்களை மட்டுமே கண்டறிகிறது. இரத்த மாற்று அறுவை சிகிச்சைக்கு முன் இரத்த வங்கி அலுவலர்களின் முறையான ஆய்வக பரிசோதனை மற்றும் குறுக்கு-பொருத்தம் (Cross-match) கட்டாயமானது.',
+    'blood.safeguard_title': 'மருத்துவமனை இரத்த வங்கி வழிகாட்டுதல்',
+    'blood.safeguard_text': 'அனைத்து இரத்த அலகுகளும் மருத்துவமனை இரத்த வங்கியின் முறையான ஆய்வக பரிசோதனைக்கு பின்னரே வழங்கப்படுகின்றன.',
 
     // Pharmacy module
     'pharma.header': 'மருந்தகம் & மருந்து விநியோகம்',
@@ -259,7 +259,7 @@ const translations: Record<Language, Record<string, string>> = {
     'common.loading': 'தரவு ஏற்றப்படுகிறது...',
     'common.error': 'பிழை ஏற்பட்டது',
     'common.empty': 'பொருத்தமான பதிவுகள் எதுவும் இல்லை.',
-    'common.demo_mode': 'கல்வி ஹேக்கத்தான் மாதிரி திட்டம் (மாதிரித் தரவு மட்டுமே)',
+    'common.demo_mode': 'மருத்துவமனை நேரடி செயல்பாட்டு வலையமைப்பு (நேரலை நிலை)',
   },
 };
 

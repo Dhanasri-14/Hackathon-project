@@ -90,14 +90,14 @@ export const ProfileSettingsPage: React.FC<{ onNavigate: (page: string) => void 
         </div>
       </div>
 
-      {/* Academic Project Acknowledgement */}
+      {/* Healthcare Network Information */}
       <div className="p-6 rounded-3xl bg-slate-900 text-white shadow-xl space-y-2 text-xs">
-        <span className="text-amber-400 font-bold uppercase tracking-wider block">
-          RISQUADATHON-2.0 Submission
+        <span className="text-emerald-400 font-bold uppercase tracking-wider block">
+          Healthcare Operations Platform
         </span>
-        <h3 className="font-bold text-white text-sm">UyirThunai — A Helping Hand for Every Life</h3>
+        <h3 className="font-bold text-white text-sm">UyirThunai — Integrated Hospital & Pharmacy Network</h3>
         <p className="text-slate-300 leading-relaxed">
-          Engineered as a full-stack coordination system with SQLite persistent relational tables, multi-factor immunological compatibility matching, and tracked pharmacy dispatch.
+          Centralized coordination platform for emergency blood bank matching, donor registries, verified prescription processing, and tracked delivery logistics.
         </p>
       </div>
     </div>

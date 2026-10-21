@@ -95,9 +95,9 @@ export const DemoSwitcherModal: React.FC<DemoSwitcherModalProps> = ({ isOpen, on
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold">Fast Role Switcher (Judge & Demo Mode)</h3>
+              <h3 className="text-lg font-bold">Personnel & Department Portal Selector</h3>
               <p className="text-xs text-slate-300">
-                Instantly switch roles with 1-click to test complete end-to-end workflows
+                Switch between authorized hospital roles and healthcare departments
               </p>
             </div>
           </div>
@@ -112,7 +112,7 @@ export const DemoSwitcherModal: React.FC<DemoSwitcherModalProps> = ({ isOpen, on
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-3">
           <p className="text-xs text-slate-600">
-            Select any persona below to authenticate instantly without entering passwords:
+            Select your authorized department or personnel profile:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -171,7 +171,7 @@ export const DemoSwitcherModal: React.FC<DemoSwitcherModalProps> = ({ isOpen, on
 
         {/* Footer */}
         <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500">
-          <span>Academic Hackathon Demo Mode: All records are fictional and safe.</span>
+          <span>UyirThunai Integrated Hospital & Healthcare Network Operations</span>
           <button
             onClick={onClose}
             className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-medium transition"

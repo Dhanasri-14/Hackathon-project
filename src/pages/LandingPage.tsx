@@ -64,9 +64,9 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl bg-radial from-slate-800 via-slate-900 to-slate-950 text-white p-8 sm:p-12 lg:p-16 border border-slate-800 shadow-2xl">
         <div className="relative z-10 max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/20 border border-red-500/30 text-red-300 text-xs font-bold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            RISQUADATHON-2.0 ACADEMIC HACKATHON PROJECT
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold tracking-wide">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            LIVE HOSPITAL NETWORK & EMERGENCY DISPATCH SYSTEM
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
@@ -88,7 +88,7 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
               onClick={() => onNavigate(user ? 'dashboard' : 'login')}
               className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/30 transition flex items-center gap-2"
             >
-              <span>{user ? t('nav.dashboard') : 'Launch Demo Portal'}</span>
+              <span>{user ? t('nav.dashboard') : 'Access Healthcare Portal'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
@@ -170,21 +170,22 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
         </div>
       </section>
 
-      {/* Fast 1-Click Persona Testing Panel for Evaluators */}
+      {/* Department & Personnel Portal Access */}
       <section className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4" />
-              Evaluation & Judging Fast-Track
+            <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
+              <Building2 className="w-4 h-4" />
+              Integrated Healthcare Network
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold mt-1">1-Click Role Switcher</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mt-1">Department & Personnel Portals</h2>
             <p className="text-xs text-slate-300 mt-0.5">
-              Switch directly into any of the 6 roles without entering passwords to test each role&apos;s permissions and workflows.
+              Access dedicated workflows for hospital blood banks, registered donors, licensed pharmacists, delivery logistics, patients, and administrators.
             </p>
           </div>
-          <div className="text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-            Database: Persistent SQLite with Foreign Keys
+          <div className="text-xs text-emerald-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            System Status: Operational
           </div>
         </div>
 
@@ -308,9 +309,6 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
           </div>
         </div>
       </section>
-
-      {/* Medical Safeguards Banner */}
-      <MedicalDisclaimer />
     </div>
   );
 };

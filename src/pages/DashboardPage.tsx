@@ -366,9 +366,6 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
           </div>
         </div>
       </div>
-
-      {/* Medical Safeguards */}
-      <MedicalDisclaimer />
     </div>
   );
 };

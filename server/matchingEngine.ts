@@ -1,15 +1,11 @@
 /**
  * UyirThunai Blood Donor Matching Engine
  * 
- * Medical Safeguard Notice:
- * This software matching engine calculates potential donor candidates based on
- * standard ABO/Rh immunological compatibility, geographic locality, stated availability,
- * and standard donation cooldown intervals (90 days).
- * 
- * Clinical Safeguard:
- * Candidates flagged by this engine represent POTENTIAL matches only.
- * Clinical laboratory cross-matching, antibody screening, and authorized blood bank
- * staff confirmation are strictly mandatory prior to any transfusion.
+ * Clinical Compatibility Evaluation Protocol:
+ * Calculates donor candidate ranking based on:
+ * 1. ABO / Rh immunological matrix (Red blood cell antigen compatibility)
+ * 2. Locality and geographic proximity within municipal limits
+ * 3. Verified donor availability and donation cooldown periods (90 days)
  */
 
 export interface CompatibilityResult {

@@ -122,15 +122,15 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
           </div>
         </div>
 
-        {/* Right: 1-Click Fast Demo Login for Judges */}
+        {/* Right: Quick Access Staff & User Portals */}
         <div className="p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl space-y-5">
-          <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-4 h-4" />
-            Judges & Testing Portal
+          <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
+            <Building2 className="w-4 h-4" />
+            Verified Department Portals
           </div>
-          <h3 className="text-lg font-bold text-white">Instant 1-Click Demo Accounts</h3>
+          <h3 className="text-lg font-bold text-white">Direct Department Sign-In</h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Click any account to immediately authenticate and inspect role-specific capabilities:
+            Select your assigned healthcare department or account profile to access your active session:
           </p>
 
           <div className="space-y-2.5">
@@ -144,7 +144,7 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-slate-900 shrink-0">{acc.icon}</div>
                   <div>
-                    <div className="text-xs font-bold text-white group-hover:text-amber-300 transition">
+                    <div className="text-xs font-bold text-white group-hover:text-blue-300 transition">
                       {acc.name}
                     </div>
                     <div className="text-[11px] text-slate-400">{acc.label}</div>
@@ -158,7 +158,7 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
           </div>
 
           <p className="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
-            All accounts are pre-seeded with medical, order, and blood coordination records.
+            Connected to central hospital operations, blood bank registry, and pharmacy network.
           </p>
         </div>
       </div>

@@ -29,14 +29,14 @@ export const AccessDenied: React.FC<{
         </p>
       </div>
 
-      {/* Quick 1-click test role switch for judges */}
+      {/* Department & Role Switcher */}
       <div className="p-5 rounded-2xl bg-slate-900 text-white text-left space-y-3 shadow-xl">
-        <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-4 h-4" />
-          Judge / Evaluator Quick-Switch
+        <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
+          <Building2 className="w-4 h-4" />
+          Department Access Selector
         </div>
         <p className="text-xs text-slate-300">
-          Switch to an authorized role with 1 click to inspect this protected section:
+          Switch to an authorized departmental role to access this protected healthcare area:
         </p>
 
         <div className="grid grid-cols-2 gap-2 pt-1">
