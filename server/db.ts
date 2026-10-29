@@ -276,6 +276,54 @@ function initSchema(db: Database): void {
     );
   `);
 
+  // 12. Hospital Inpatient Admissions (Linked with live medicine orders & delivery tracking)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS admissions (
+      id TEXT PRIMARY KEY,
+      patient_name TEXT NOT NULL,
+      patient_phone TEXT,
+      patient_age INTEGER,
+      patient_gender TEXT,
+      hospital_name TEXT NOT NULL,
+      hospital_city TEXT NOT NULL,
+      ward_number TEXT NOT NULL,
+      bed_number TEXT NOT NULL,
+      attending_physician TEXT NOT NULL,
+      diagnosis TEXT NOT NULL,
+      blood_group TEXT,
+      admission_date TEXT NOT NULL,
+      discharge_date TEXT,
+      order_id TEXT,
+      status TEXT NOT NULL DEFAULT 'Active',
+      emergency_priority TEXT NOT NULL DEFAULT 'Standard',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+
+  // 13. WebAuthn Authenticators
+  db.run(`
+    CREATE TABLE IF NOT EXISTS authenticators (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      public_key BLOB NOT NULL,
+      counter INTEGER NOT NULL DEFAULT 0,
+      transports TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `);
+
+  // 14. WebAuthn Challenges (Transient)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS user_challenges (
+      user_id TEXT PRIMARY KEY,
+      challenge TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `);
+
   // Indexes for high performance
   db.run(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_donors_blood ON donors(blood_group);`);
@@ -283,4 +331,13 @@ function initSchema(db: Database): void {
   db.run(`CREATE INDEX IF NOT EXISTS idx_medicines_cat ON medicines(category);`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read);`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_admissions_status ON admissions(status);`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_authenticators_user ON authenticators(user_id);`);
+
+  // Safe schema migrations for real payment & notification logging
+  try { db.run(`ALTER TABLE orders ADD COLUMN payment_utr TEXT;`); } catch (_) {}
+  try { db.run(`ALTER TABLE orders ADD COLUMN payment_time TEXT;`); } catch (_) {}
+  try { db.run(`ALTER TABLE orders ADD COLUMN notification_sent_whatsapp INTEGER DEFAULT 0;`); } catch (_) {}
+  try { db.run(`ALTER TABLE orders ADD COLUMN notification_sent_email INTEGER DEFAULT 0;`); } catch (_) {}
+  try { db.run(`ALTER TABLE orders ADD COLUMN notification_log TEXT;`); } catch (_) {}
 }

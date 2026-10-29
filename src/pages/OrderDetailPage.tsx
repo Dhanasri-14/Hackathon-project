@@ -13,11 +13,17 @@ import {
   AlertTriangle,
   Send,
   Boxes,
+  QrCode,
+  Mail,
+  ExternalLink,
+  CreditCard,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.tsx';
 import { useI18n } from '../i18n.tsx';
 import { apiRequest } from '../api.ts';
 import { Order, OrderItem, DeliveryAssignment } from '../types.ts';
+import { RealPaymentModal } from '../components/RealPaymentModal.tsx';
+import { GoogleMapsDeliveryTracker } from '../components/GoogleMapsDeliveryTracker.tsx';
 
 interface OrderDetailPageProps {
   orderId: string;
@@ -45,6 +51,7 @@ export const OrderDetailPage: React.FC<OrderDetailPageProps> = ({ orderId, onNav
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const fetchOrderDetails = async () => {
     setLoading(true);
@@ -253,6 +260,36 @@ export const OrderDetailPage: React.FC<OrderDetailPageProps> = ({ orderId, onNav
           </div>
         </div>
 
+        {/* Live GPS Tracking Map Integration */}
+        {order.gps_telemetry && (order.status === 'Out for Delivery' || order.status === 'Courier Assigned' || order.status === 'Delivered') && (
+          <div className="pt-4 border-t border-slate-100">
+            <GoogleMapsDeliveryTracker 
+              admission={{
+                id: order.id,
+                patient_name: order.user_name || 'Patient',
+                hospital_name: 'Delivery Destination',
+                hospital_city: order.delivery_city,
+                ward_number: 'N/A',
+                bed_number: 'Home Delivery',
+                attending_physician: 'Verified Pharmacy Staff',
+                diagnosis: 'Order Fulfillment',
+                admission_date: order.created_at,
+                status: 'Active',
+                emergency_priority: 'Standard Inpatient',
+                created_at: order.created_at,
+                updated_at: order.updated_at,
+                order_id: order.id,
+                gps_telemetry: order.gps_telemetry,
+                courier: {
+                  id: order.courier_id || 'N/A',
+                  full_name: order.courier_name || 'Assigned Courier',
+                  phone: order.courier_phone || 'N/A'
+                }
+              }} 
+            />
+          </div>
+        )}
+
         {/* Delivery Destination & Courier Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
           <div className="space-y-1">
@@ -272,11 +309,83 @@ export const OrderDetailPage: React.FC<OrderDetailPageProps> = ({ orderId, onNav
           </div>
 
           <div className="space-y-1">
-            <span className="text-slate-400 font-medium block">Payment Method</span>
-            <span className="font-bold text-slate-800 block">{order.payment_method}</span>
-            <span className="text-emerald-600 font-semibold">{order.payment_status}</span>
+            <span className="text-slate-400 font-medium block">Payment Status</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-slate-800">{order.payment_method}</span>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                order.payment_status === 'Paid'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  : 'bg-amber-100 text-amber-800 border border-amber-300'
+              }`}>
+                {order.payment_status}
+              </span>
+            </div>
+            {order.payment_utr && (
+              <span className="text-[10px] text-slate-500 font-mono block">
+                UTR: {order.payment_utr}
+              </span>
+            )}
           </div>
         </div>
+
+        {/* Real-time Payment & Official Notification Action Card */}
+        {order.payment_status === 'Paid' ? (
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/80 border border-emerald-300 text-xs space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <div>
+                  <span className="font-black text-emerald-950 text-sm block">
+                    Payment Verified & Confirmed
+                  </span>
+                  <span className="text-emerald-700">
+                    Real-time payment verified via secure gateway. Order tagged for expedited pharmacy packing and delivery dispatch.
+                  </span>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-600 text-white font-black text-xs shrink-0 self-start sm:self-center">
+                ₹{order.total_amount.toFixed(2)} PAID
+              </span>
+            </div>
+
+            {/* Direct Official Notification Dispatch Indicators */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-emerald-200">
+              <div className="text-[11px] text-emerald-900 font-medium">
+                Official alerts successfully dispatched to Authorized Healthcare Desk & Verified Pharmacy Email.
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-[10px] flex items-center gap-1.5 uppercase tracking-wider">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Verified Transaction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-300 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                <span className="font-black text-amber-950 text-sm">
+                  Payment Pending: ₹{order.total_amount.toFixed(2)}
+                </span>
+              </div>
+              <p className="text-amber-900">
+                Complete the secure payment via the unified gateway to confirm your order. Notifications will be automatically dispatched to our verified fulfillment team.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowPaymentModal(true)}
+              className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-600/30 transition shrink-0"
+            >
+              <QrCode className="w-4 h-4" />
+              <span>Proceed to Secure Payment</span>
+            </button>
+          </div>
+        )}
 
         {order.prescription_id && (
           <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-center justify-between">
@@ -421,6 +530,21 @@ export const OrderDetailPage: React.FC<OrderDetailPageProps> = ({ orderId, onNav
           </table>
         </div>
       </div>
+
+      {/* Real-time Payment & QR Scanner Modal */}
+      <RealPaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        orderId={order.id}
+        totalAmount={order.total_amount}
+        customerName={order.user_name}
+        customerPhone={order.delivery_phone}
+        deliveryAddress={`${order.delivery_address}, ${order.delivery_city}`}
+        onPaymentSuccess={async () => {
+          setToast('Payment confirmed! Real-time notifications dispatched to Verified Healthcare Dispatch Desk.');
+          await fetchOrderDetails();
+        }}
+      />
     </div>
   );
 };

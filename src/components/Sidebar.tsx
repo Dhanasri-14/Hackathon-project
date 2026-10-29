@@ -17,6 +17,7 @@ import {
   Settings,
   Sparkles,
   X,
+  Navigation,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.tsx';
 import { useI18n } from '../i18n.tsx';
@@ -73,6 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, isOpe
           roles: ['pharmacy_staff', 'admin'],
         },
         { id: 'orders', label: t('nav.orders'), icon: ShoppingBag, roles: ['all'] },
+        {
+          id: 'admission-tracking',
+          label: t('nav.admission_tracking'),
+          icon: Navigation,
+          roles: ['all'],
+          badge: 'Courier',
+        },
         {
           id: 'courier',
           label: t('nav.courier_hub'),

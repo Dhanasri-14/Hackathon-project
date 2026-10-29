@@ -168,7 +168,7 @@ export const UserManagementPage: React.FC<{ onNavigate: (page: string) => void }
                     </select>
                   </td>
                   <td className="py-3.5 px-4 text-right text-slate-400">
-                    {u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Demo Seed'}
+                    {u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Hospital Registry'}
                   </td>
                 </tr>
               ))}

@@ -138,6 +138,10 @@ export interface Order {
   delivery_phone: string;
   payment_method: string;
   payment_status: 'Pending' | 'Paid';
+  payment_utr?: string | null;
+  payment_time?: string | null;
+  notification_sent_whatsapp?: number;
+  notification_sent_email?: number;
   status: 'Submitted' | 'Awaiting Prescription Review' | 'Approved' | 'Processing' | 'Ready for Dispatch' | 'Courier Assigned' | 'Out for Delivery' | 'Delivered' | 'Rejected' | 'Cancelled';
   courier_id?: string | null;
   courier_name?: string | null;
@@ -149,6 +153,7 @@ export interface Order {
   rx_patient?: string;
   rx_doctor?: string;
   rx_status?: string;
+  gps_telemetry?: GpsTelemetry;
 }
 
 export interface DeliveryAssignment {
@@ -168,7 +173,7 @@ export interface NotificationItem {
   title_ta: string;
   message: string;
   message_ta: string;
-  type: 'blood_request' | 'match_alert' | 'donor_accepted' | 'prescription_update' | 'order_status' | 'inventory_alert' | 'system';
+  type: 'blood_request' | 'match_alert' | 'donor_accepted' | 'prescription_update' | 'order_status' | 'order_payment' | 'inventory_alert' | 'system';
   link?: string | null;
   is_read: number;
   created_at: string;
@@ -186,6 +191,56 @@ export interface AuditLogItem {
   created_at: string;
 }
 
+export interface BloodInventoryLevel {
+  blood_group: string;
+  units_in_stock: number;
+  target_capacity: number;
+  critical_threshold: number;
+  donor_count: number;
+  available_donors: number;
+  active_requests: number;
+  percentage: number;
+  status: 'optimal' | 'moderate' | 'critical';
+}
+
+export interface GpsTelemetry {
+  origin: { lat: number; lng: number };
+  destination: { lat: number; lng: number };
+  current_location: { lat: number; lng: number };
+  vehicle_speed_kmh: number;
+  distance_remaining_km: number;
+  eta_minutes: number;
+  temp_celsius: number;
+  cold_chain_status: string;
+  last_ping: string;
+}
+
+export interface AdmissionRecord {
+  id: string;
+  patient_name: string;
+  patient_phone?: string;
+  patient_age?: number;
+  patient_gender?: string;
+  hospital_name: string;
+  hospital_city: string;
+  ward_number: string;
+  bed_number: string;
+  attending_physician: string;
+  diagnosis: string;
+  blood_group?: string;
+  admission_date: string;
+  discharge_date?: string | null;
+  order_id?: string | null;
+  status: 'Active' | 'Discharged / Recovered' | 'Transferred' | 'Under Observation';
+  emergency_priority: 'Critical Emergency' | 'Urgent' | 'High Priority' | 'Standard Inpatient';
+  created_at: string;
+  updated_at: string;
+  order?: Order | null;
+  order_items?: OrderItem[];
+  courier?: { id: string; full_name: string; phone?: string; role?: string } | null;
+  gps_telemetry?: GpsTelemetry;
+}
+
 export interface DashboardStats {
   blood: {
     totalRequests: number;
@@ -195,6 +250,7 @@ export interface DashboardStats {
     totalDonors: number;
     availableDonors: number;
     bloodDistribution: { blood_group: string; donor_count: number; available_count: number }[];
+    inventoryLevels?: BloodInventoryLevel[];
   };
   pharmacy: {
     totalMedicines: number;

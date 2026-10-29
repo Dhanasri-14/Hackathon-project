@@ -23,6 +23,7 @@ export const OrdersPage: React.FC<{ onNavigate: (page: string) => void }> = ({ o
   const [statusFilter, setStatusFilter] = useState('All');
 
   const fetchOrders = async () => {
+    if (!user) return;
     setLoading(true);
     try {
       const params = new URLSearchParams();

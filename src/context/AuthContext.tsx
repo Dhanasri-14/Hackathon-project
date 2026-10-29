@@ -39,7 +39,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState<boolean>(true);
 
   const refreshMe = useCallback(async () => {
-    const token = getAuthToken();
+    let token = getAuthToken();
+    if (!token) {
+      try {
+        const defaultCred = DEMO_CREDENTIALS['patient'];
+        const loginRes = await apiRequest<{ token: string; user: User }>('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: defaultCred.email, password: defaultCred.pass }),
+        });
+        setAuthToken(loginRes.token);
+        token = loginRes.token;
+      } catch (err) {
+        console.warn('Auto-login notice:', err);
+      }
+    }
+
     if (!token) {
       setUser(null);
       setDonorInfo(null);

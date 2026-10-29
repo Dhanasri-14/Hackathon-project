@@ -24,6 +24,7 @@ import { useCart } from '../context/CartContext.tsx';
 import { DemoSwitcherModal } from './DemoSwitcherModal.tsx';
 import { apiRequest } from '../api.ts';
 import { NotificationItem } from '../types.ts';
+import { PWAInstallButton } from './PWAInstallButton.tsx';
 
 interface NavbarProps {
   onToggleSidebar?: () => void;
@@ -108,21 +109,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, onNavigate, cur
             </button>
           </div>
 
-          {/* Center: Department Portal / Quick Role Badge */}
+          {/* Center: Logins / Quick Role Switcher */}
           <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition shadow-inner"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition shadow-inner"
             >
-              <Shield className="w-3.5 h-3.5 text-blue-400" />
-              <span>Portal: </span>
+              <Shield className="w-3.5 h-3.5 text-red-400" />
+              <span className="font-bold">{t('nav.logins')}: </span>
               {user ? (
                 <span className="font-semibold text-white flex items-center gap-1.5">
                   {getRoleIcon(user.role)}
                   {t(`role.${user.role}`)}
                 </span>
               ) : (
-                <span className="text-blue-300 font-semibold">Select Department</span>
+                <span className="text-blue-300 font-semibold">{t('nav.logins')}</span>
               )}
               <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             </button>
@@ -149,6 +150,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, onNavigate, cur
                 தமிழ்
               </button>
             </div>
+
+            <PWAInstallButton />
 
             {/* Shopping Cart button */}
             <button
@@ -325,7 +328,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, onNavigate, cur
                   className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs transition shadow-xs flex items-center gap-1.5"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Demo Logins</span>
+                  <span>{t('nav.logins')}</span>
                 </button>
                 <button
                   onClick={() => onNavigate('login')}

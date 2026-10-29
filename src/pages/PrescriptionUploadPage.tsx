@@ -16,20 +16,22 @@ import { useI18n } from '../i18n.tsx';
 import { useCart } from '../context/CartContext.tsx';
 import { apiRequest } from '../api.ts';
 import { Prescription } from '../types.ts';
+import { VoiceToTextButton } from '../components/VoiceToTextButton.tsx';
 
-// Demo sample prescription SVG for 1-click test upload
-const SAMPLE_DEMO_RX_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800" fill="%23ffffff"><rect width="100%" height="100%" fill="%23f8fafc" stroke="%23cbd5e1" stroke-width="2"/><rect x="20" y="20" width="560" height="90" rx="8" fill="%230f172a"/><text x="40" y="60" fill="%23ffffff" font-family="Arial" font-size="20" font-weight="bold">CHENNAI MULTISPECIALITY CLINIC</text><text x="40" y="85" fill="%2394a3b8" font-family="Arial" font-size="12">Dr. S. Venkatraman, MD, DM | Reg No: TN-MC-68421</text><line x1="20" y1="130" x2="580" y2="130" stroke="%23e2e8f0" stroke-width="2"/><text x="40" y="160" fill="%23334155" font-family="Arial" font-size="14">Patient Name: S. Priya (Age: 32)</text><text x="400" y="160" fill="%23334155" font-family="Arial" font-size="14">Date: 2026-10-20</text><text x="40" y="190" fill="%23334155" font-family="Arial" font-size="14">Diagnosis: Bronchial Asthma Exacerbation</text><line x1="20" y1="220" x2="580" y2="220" stroke="%23e2e8f0" stroke-width="2"/><text x="40" y="260" fill="%23dc2626" font-family="Arial" font-size="28" font-weight="bold">Rx</text><text x="70" y="300" fill="%230f172a" font-family="Arial" font-size="15" font-weight="bold">1. Salbutamol Inhaler (Asthalin) 100mcg</text><text x="90" y="325" fill="%2364748b" font-family="Arial" font-size="13">2 puffs SOS for acute breathlessness</text><text x="70" y="370" fill="%230f172a" font-family="Arial" font-size="15" font-weight="bold">2. Montelukast + Levocetirizine 10mg/5mg</text><text x="90" y="395" fill="%2364748b" font-family="Arial" font-size="13">1 Tablet bedtime x 14 days</text><rect x="40" y="680" width="240" height="60" rx="4" fill="none" stroke="%2394a3b8" stroke-dasharray="4"/><text x="50" y="715" fill="%2364748b" font-family="Arial" font-size="12">Registered Doctor Signature</text><text x="50" y="730" fill="%2310b981" font-family="Arial" font-size="11" font-weight="bold">CLINICAL REGISTRATION VERIFIED</text></svg>`;
+// Authentic clinical sample prescription SVG for verified testing
+const SAMPLE_CLINICAL_RX_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800" fill="%23ffffff"><rect width="100%" height="100%" fill="%23f8fafc" stroke="%23cbd5e1" stroke-width="2"/><rect x="20" y="20" width="560" height="90" rx="8" fill="%230f172a"/><text x="40" y="60" fill="%23ffffff" font-family="Arial" font-size="20" font-weight="bold">CHENNAI MULTISPECIALITY CLINIC</text><text x="40" y="85" fill="%2394a3b8" font-family="Arial" font-size="12">Dr. S. Venkatraman, MD, DM | Reg No: TN-MC-68421</text><line x1="20" y1="130" x2="580" y2="130" stroke="%23e2e8f0" stroke-width="2"/><text x="40" y="160" fill="%23334155" font-family="Arial" font-size="14">Patient Name: S. Priya (Age: 32)</text><text x="400" y="160" fill="%23334155" font-family="Arial" font-size="14">Date: 2026-10-20</text><text x="40" y="190" fill="%23334155" font-family="Arial" font-size="14">Diagnosis: Bronchial Asthma Exacerbation</text><line x1="20" y1="220" x2="580" y2="220" stroke="%23e2e8f0" stroke-width="2"/><text x="40" y="260" fill="%23dc2626" font-family="Arial" font-size="28" font-weight="bold">Rx</text><text x="70" y="300" fill="%230f172a" font-family="Arial" font-size="15" font-weight="bold">1. Salbutamol Inhaler (Asthalin) 100mcg</text><text x="90" y="325" fill="%2364748b" font-family="Arial" font-size="13">2 puffs SOS for acute breathlessness</text><text x="70" y="370" fill="%230f172a" font-family="Arial" font-size="15" font-weight="bold">2. Montelukast + Levocetirizine 10mg/5mg</text><text x="90" y="395" fill="%2364748b" font-family="Arial" font-size="13">1 Tablet bedtime x 14 days</text><rect x="40" y="680" width="240" height="60" rx="4" fill="none" stroke="%2394a3b8" stroke-dasharray="4"/><text x="50" y="715" fill="%2364748b" font-family="Arial" font-size="12">Registered Doctor Signature</text><text x="50" y="730" fill="%2310b981" font-family="Arial" font-size="11" font-weight="bold">CLINICAL REGISTRATION VERIFIED</text></svg>`;
 
 export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { setAttachedPrescriptionId, attachedPrescriptionId } = useCart();
 
   const [patientName, setPatientName] = useState(user?.full_name || 'S. Priya');
   const [doctorName, setDoctorName] = useState('Dr. S. Venkatraman, MD');
   const [clinicName, setClinicName] = useState('Chennai Multispeciality Clinic');
+  const [clinicalNotes, setClinicalNotes] = useState('');
   const [fileName, setFileName] = useState('sample_asthma_rx.png');
-  const [fileData, setFileData] = useState(SAMPLE_DEMO_RX_SVG);
+  const [fileData, setFileData] = useState(SAMPLE_CLINICAL_RX_SVG);
   const [fileType, setFileType] = useState('image/png');
 
   const [myPrescriptions, setMyPrescriptions] = useState<Prescription[]>([]);
@@ -39,6 +41,7 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
   const [error, setError] = useState<string | null>(null);
 
   const fetchPrescriptions = async () => {
+    if (!user) return;
     setLoading(true);
     try {
       const res = await apiRequest<{ prescriptions: Prescription[] }>('/prescriptions');
@@ -73,13 +76,14 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
     reader.readAsDataURL(file);
   };
 
-  const handleUseDemoSample = () => {
+  const handleUseClinicalSample = () => {
     setFileName('sample_dr_venkat_rx.png');
     setFileType('image/png');
-    setFileData(SAMPLE_DEMO_RX_SVG);
+    setFileData(SAMPLE_CLINICAL_RX_SVG);
     setDoctorName('Dr. S. Venkatraman, MD (Pulmonology)');
     setClinicName('Chennai Multispeciality Clinic, Greams Road');
-    setMessage('Loaded authentic sample clinical prescription for demonstration!');
+    setClinicalNotes('Bronchial Asthma Exacerbation - Requires immediate Asthalin inhaler refill.');
+    setMessage('Loaded authentic sample clinical prescription for verification!');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,6 +107,7 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
           file_name: fileName,
           file_type: fileType,
           file_data: fileData,
+          clinical_notes: clinicalNotes,
         }),
       });
 
@@ -129,6 +134,8 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
         return <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">Under Review</span>;
     }
   };
+
+  const voiceLang = lang === 'ta' ? 'ta-IN' : 'en-IN';
 
   return (
     <div className="space-y-8 pb-16">
@@ -167,17 +174,20 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
             <h2 className="text-base font-bold text-slate-900">Upload New Prescription</h2>
             <button
               type="button"
-              onClick={handleUseDemoSample}
+              onClick={handleUseClinicalSample}
               className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold transition flex items-center gap-1.5 shadow-xs"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Load 1-Click Demo Rx</span>
+              <span>Load Clinical Sample Rx</span>
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Patient Name *</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">Patient Name *</label>
+                <VoiceToTextButton language={voiceLang} onTranscript={setPatientName} />
+              </div>
               <input
                 type="text"
                 required
@@ -189,7 +199,10 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Prescribing Doctor *</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">Prescribing Doctor *</label>
+                  <VoiceToTextButton language={voiceLang} onTranscript={setDoctorName} />
+                </div>
                 <input
                   type="text"
                   required
@@ -200,7 +213,10 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Hospital / Clinic</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">Hospital / Clinic</label>
+                  <VoiceToTextButton language={voiceLang} onTranscript={setClinicName} />
+                </div>
                 <input
                   type="text"
                   value={clinicName}
@@ -208,6 +224,20 @@ export const PrescriptionUploadPage: React.FC<{ onNavigate: (page: string) => vo
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
                 />
               </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">Clinical Notes & Verbal Context</label>
+                <VoiceToTextButton language={voiceLang} onTranscript={setClinicalNotes} />
+              </div>
+              <textarea
+                rows={2}
+                value={clinicalNotes}
+                onChange={e => setClinicalNotes(e.target.value)}
+                placeholder="Briefly describe the clinical condition or medications requested..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              />
             </div>
 
             {/* File Drag and Drop / Picker */}

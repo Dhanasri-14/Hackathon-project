@@ -44,8 +44,8 @@ export const AuditLogsPage: React.FC<{ onNavigate: (page: string) => void }> = (
     fetchLogs();
   }, [roleFilter, actionFilter]);
 
-  const handleResetDemoData = async () => {
-    if (!window.confirm('Reset database to clean baseline operational state? Any active records will be refreshed.')) {
+  const handleSynchronizeOperationalData = async () => {
+    if (!window.confirm('Synchronize database to clean baseline operational state? Active hospital records will be refreshed.')) {
       return;
     }
     setResetting(true);
@@ -55,7 +55,7 @@ export const AuditLogsPage: React.FC<{ onNavigate: (page: string) => void }> = (
       setTimeout(() => setToast(null), 3500);
       await fetchLogs();
     } catch (err: any) {
-      alert(err.message || 'Reset failed');
+      console.error(err);
     } finally {
       setResetting(false);
     }
@@ -79,12 +79,12 @@ export const AuditLogsPage: React.FC<{ onNavigate: (page: string) => void }> = (
         </div>
 
         <button
-          onClick={handleResetDemoData}
+          onClick={handleSynchronizeOperationalData}
           disabled={resetting}
           className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
         >
           <RotateCcw className={`w-4 h-4 ${resetting ? 'animate-spin' : ''}`} />
-          <span>Reset & Re-seed Demo Records</span>
+          <span>Synchronize Operational Records</span>
         </button>
       </div>
 

@@ -14,66 +14,91 @@ export const Logo: React.FC<LogoProps> = ({
   className = '',
   light = false,
 }) => {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const iconSizes = {
-    sm: 'w-7 h-7',
-    md: 'w-9 h-9',
-    lg: 'w-12 h-12',
-    xl: 'w-16 h-16',
+    sm: 'w-8 h-8',
+    md: 'w-11 h-11',
+    lg: 'w-14 h-14',
+    xl: 'w-20 h-20',
   };
 
   const titleSizes = {
-    sm: 'text-base',
-    md: 'text-xl',
-    lg: 'text-2xl',
-    xl: 'text-3xl',
+    sm: 'text-lg',
+    md: 'text-2xl',
+    lg: 'text-3xl',
+    xl: 'text-4xl sm:text-5xl',
   };
 
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
-      {/* Custom Vector Icon: Heart + Helping Hand + Medical Cross */}
-      <div className={`relative shrink-0 ${iconSizes[size]} flex items-center justify-center drop-shadow-sm`}>
-        <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Outer Protective Heart (Red emergency symbol) */}
-          <path
-            d="M50 88 C18 58 10 38 10 25 C10 12 22 5 35 5 C44 5 48 10 50 14 C52 10 56 5 65 5 C78 5 90 12 90 25 C90 38 82 58 50 88 Z"
-            fill="url(#heartGradient)"
-          />
+    <div className={`flex items-center gap-3.5 select-none ${className}`}>
+      {/* High-visibility Luminous Glowing Emblem */}
+      <div className={`relative shrink-0 ${iconSizes[size]} flex items-center justify-center`}>
+        {/* Ambient highlighter glow halo */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-red-600/40 via-rose-500/30 to-amber-400/30 blur-md scale-110 pointer-events-none" />
 
-          {/* Medical Cross Symbol (White) */}
-          <rect x="44" y="20" width="12" height="24" rx="3" fill="#ffffff" />
-          <rect x="38" y="26" width="24" height="12" rx="3" fill="#ffffff" />
+        <div className="relative w-full h-full drop-shadow-md">
+          <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Outer Protective Heart (Red emergency symbol) */}
+            <path
+              d="M50 88 C18 58 10 38 10 25 C10 12 22 5 35 5 C44 5 48 10 50 14 C52 10 56 5 65 5 C78 5 90 12 90 25 C90 38 82 58 50 88 Z"
+              fill="url(#heartGradientHighlighted)"
+              stroke="#ffffff"
+              strokeWidth="2.5"
+            />
 
-          {/* Supportive Helping Hand Silhouette (Cyan / Blue gradient curve) */}
-          <path
-            d="M26 62 C32 52 46 45 60 52 C70 57 74 68 68 76 C60 84 45 84 38 80"
-            stroke="#ffffff"
-            strokeWidth="5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M32 60 C38 66 52 75 64 71"
-            stroke="#38bdf8"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
+            {/* Medical Cross Symbol (White with subtle shadow) */}
+            <rect x="44" y="20" width="12" height="24" rx="3" fill="#ffffff" />
+            <rect x="38" y="26" width="24" height="12" rx="3" fill="#ffffff" />
 
-          <defs>
-            <linearGradient id="heartGradient" x1="10" y1="5" x2="90" y2="88" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#ef4444" />
-              <stop offset="1" stopColor="#b91c1c" />
-            </linearGradient>
-          </defs>
-        </svg>
+            {/* Supportive Helping Hand Silhouette */}
+            <path
+              d="M26 62 C32 52 46 45 60 52 C70 57 74 68 68 76 C60 84 45 84 38 80"
+              stroke="#ffffff"
+              strokeWidth="5.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M32 60 C38 66 52 75 64 71"
+              stroke="#38bdf8"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+
+            <defs>
+              <linearGradient id="heartGradientHighlighted" x1="10" y1="5" x2="90" y2="88" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#ff2e2e" />
+                <stop offset="0.6" stopColor="#dc2626" />
+                <stop offset="1" stopColor="#991b1b" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
       </div>
 
       <div className="flex flex-col">
-        <span className={`font-black tracking-tight leading-none ${titleSizes[size]} ${light ? 'text-white' : 'text-slate-900'}`}>
-          {t('app.name')}
-        </span>
+        {/* Highlighted Project Name */}
+        <div className="flex items-center gap-2">
+          <span
+            className={`font-black tracking-tight leading-none ${titleSizes[size]} ${
+              light
+                ? 'bg-gradient-to-r from-white via-red-200 to-rose-300 bg-clip-text text-transparent drop-shadow-sm'
+                : 'bg-gradient-to-r from-red-600 via-rose-600 to-slate-900 bg-clip-text text-transparent'
+            }`}
+          >
+            {t('app.name')}
+          </span>
+          <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-600 text-white shadow-xs tracking-wider shrink-0 hidden sm:inline">
+            24/7 Network
+          </span>
+        </div>
+
         {showTagline && (
-          <span className={`text-[11px] font-medium tracking-wide mt-0.5 ${light ? 'text-slate-300' : 'text-slate-500'}`}>
+          <span
+            className={`text-xs font-bold tracking-wide mt-1 ${
+              light ? 'text-slate-300' : 'text-slate-600'
+            }`}
+          >
             {t('app.tagline')}
           </span>
         )}

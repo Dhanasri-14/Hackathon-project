@@ -66,7 +66,7 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
         <div className="relative z-10 max-w-3xl space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold tracking-wide">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            LIVE HOSPITAL NETWORK & EMERGENCY DISPATCH SYSTEM
+            HOSPITAL NETWORK & EMERGENCY DISPATCH SYSTEM
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
@@ -80,7 +80,7 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
             A unified, high-reliability healthcare coordination system combining{' '}
             <strong className="text-white">Emergency Blood Requirement & Donor Matching</strong>{' '}
             with{' '}
-            <strong className="text-white">Licensed Pharmacy Prescription Fulfilment & Tracked Medicine Delivery</strong>.
+            <strong className="text-white">Licensed Pharmacy Prescription Fulfilment & Order Tracking</strong>.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -89,6 +89,13 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
               className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/30 transition flex items-center gap-2"
             >
               <span>{user ? t('nav.dashboard') : 'Access Healthcare Portal'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onNavigate('admission-tracking')}
+              className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2"
+            >
+              <span>Order & Admission Tracking</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
@@ -111,7 +118,7 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
         <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
       </section>
 
-      {/* Live System Metrics Bar */}
+      {/* Network Operations Metrics Bar */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4">
           <div className="p-3 rounded-xl bg-red-50 text-red-600 shrink-0">
@@ -178,9 +185,9 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
               <Building2 className="w-4 h-4" />
               Integrated Healthcare Network
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold mt-1">Department & Personnel Portals</h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Access dedicated workflows for hospital blood banks, registered donors, licensed pharmacists, delivery logistics, patients, and administrators.
+            <h2 className="text-2xl sm:text-3xl font-black mt-1">{t('nav.logins')}</h2>
+            <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+              Access verified hospital workflows for blood banks, registered donors, pharmacists, couriers, and patients.
             </p>
           </div>
           <div className="text-xs text-emerald-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5">
@@ -285,7 +292,7 @@ export const LandingPage: React.FC<{ onNavigate: (page: string) => void }> = ({ 
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Prescription upload with drag-and-drop & demo 1-click sample prescriptions</span>
+                <span>Prescription upload with drag-and-drop & verified clinical sample prescriptions</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />

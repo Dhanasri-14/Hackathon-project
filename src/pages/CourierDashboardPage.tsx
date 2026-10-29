@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext.tsx';
 import { useI18n } from '../i18n.tsx';
 import { apiRequest } from '../api.ts';
 import { Order } from '../types.ts';
+import { CourierRouteMap } from '../components/CourierRouteMap.tsx';
 
 export const CourierDashboardPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
@@ -82,6 +83,10 @@ export const CourierDashboardPage: React.FC<{ onNavigate: (page: string) => void
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           <span>{toast}</span>
         </div>
+      )}
+
+      {!loading && (
+        <CourierRouteMap deliveries={deliveries} />
       )}
 
       {loading ? (

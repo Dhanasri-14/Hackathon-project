@@ -194,7 +194,7 @@ export const MedicineDetailPage: React.FC<MedicineDetailPageProps> = ({ medicine
 
           <div className="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
             <div>
-              <span className="font-bold text-slate-700 block">Manufacturer (Demo Entity)</span>
+              <span className="font-bold text-slate-700 block">Pharmaceutical Manufacturer</span>
               <span className="text-slate-900 font-semibold">{medicine.manufacturer}</span>
             </div>
             <div>

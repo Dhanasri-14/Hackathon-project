@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Shield, ArrowRight, Lock, Mail, AlertCircle, CheckCircle2, Sparkles, Building2, HeartHandshake, Pill, Truck, UserCircle } from 'lucide-react';
+import { Shield, ArrowRight, Lock, Mail, AlertCircle, CheckCircle2, Sparkles, Building2, HeartHandshake, Pill, Truck, UserCircle, Fingerprint } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.tsx';
 import { useI18n } from '../i18n.tsx';
 import { Logo } from '../components/Logo.tsx';
 import { UserRole } from '../types.ts';
+import { BiometricAuth } from '../components/BiometricAuth.tsx';
 
 export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { login, switchDemoRole } = useAuth();
@@ -35,13 +36,13 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       await switchDemoRole(role);
       onNavigate('dashboard');
     } catch (err: any) {
-      setError(err.message || 'Demo login failed');
+      setError(err.message || 'Login failed');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const demoAccounts = [
+  const roleLogins = [
     { role: 'hospital_staff' as UserRole, name: 'Rajesh Kannan', label: 'Hospital Blood Bank Staff', icon: <Building2 className="w-4 h-4 text-red-500" />, email: 'staff.rajesh@apollo-hospital.org' },
     { role: 'donor' as UserRole, name: 'Kavitha Ramanathan', label: 'Blood Donor (O+)', icon: <HeartHandshake className="w-4 h-4 text-rose-500" />, email: 'donor.kavitha@gmail.com' },
     { role: 'pharmacy_staff' as UserRole, name: 'Anandhan Selvaraj', label: 'Licensed Pharmacist', icon: <Pill className="w-4 h-4 text-blue-500" />, email: 'pharmacist.anand@medplus-tn.org' },
@@ -70,7 +71,26 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
             </div>
           )}
 
+          {/* Biometric Quick Access */}
+          <div className="space-y-3">
+             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <div className="h-[1px] flex-1 bg-slate-100" />
+                <span>Quick Access</span>
+                <div className="h-[1px] flex-1 bg-slate-100" />
+             </div>
+             <BiometricAuth 
+               mode="login" 
+               email={email} 
+               onSuccess={() => onNavigate('dashboard')} 
+             />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 pb-1">
+                <div className="h-[1px] flex-1 bg-slate-100" />
+                <span>Manual Credentials</span>
+                <div className="h-[1px] flex-1 bg-slate-100" />
+             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
               <div className="relative">
@@ -122,19 +142,19 @@ export const LoginPage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
           </div>
         </div>
 
-        {/* Right: Quick Access Staff & User Portals */}
+        {/* Right: Quick Access Staff & User Logins */}
         <div className="p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl space-y-5">
-          <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-red-400 text-xs font-black uppercase tracking-wider">
             <Building2 className="w-4 h-4" />
-            Verified Department Portals
+            Verified Hospital Logins
           </div>
-          <h3 className="text-lg font-bold text-white">Direct Department Sign-In</h3>
+          <h3 className="text-xl font-black text-white">{t('nav.logins')}</h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Select your assigned healthcare department or account profile to access your active session:
+            Select your assigned healthcare department or account profile to sign in:
           </p>
 
           <div className="space-y-2.5">
-            {demoAccounts.map(acc => (
+            {roleLogins.map(acc => (
               <button
                 key={acc.role}
                 onClick={() => handle1ClickLogin(acc.role)}

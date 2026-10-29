@@ -205,6 +205,41 @@ export const DonorDirectoryPage: React.FC<{ onNavigate: (page: string) => void }
                     </div>
                   )}
                 </div>
+
+                {isPrivileged && (
+                  <div className="pt-2 border-t border-slate-100">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await apiRequest(`/blood/donors/${d.donor_id || d.id}/verify`, {
+                            method: 'POST',
+                            body: JSON.stringify({ is_verified: d.verified_badge === 0 }),
+                          });
+                          fetchDonors();
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                      className={`w-full py-2 rounded-xl text-[10px] font-black uppercase transition flex items-center justify-center gap-1.5 ${
+                        d.verified_badge === 1
+                          ? 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                          : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs'
+                      }`}
+                    >
+                      {d.verified_badge === 1 ? (
+                        <>
+                          <AlertCircle className="w-3.5 h-3.5" />
+                          <span>Revoke Verification</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <span>Verify Donor Profile</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">

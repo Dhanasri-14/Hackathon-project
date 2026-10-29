@@ -95,9 +95,9 @@ export const DemoSwitcherModal: React.FC<DemoSwitcherModalProps> = ({ isOpen, on
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold">Personnel & Department Portal Selector</h3>
+              <h3 className="text-xl font-black text-white">{t('nav.logins')}</h3>
               <p className="text-xs text-slate-300">
-                Switch between authorized hospital roles and healthcare departments
+                Direct access sign-in for healthcare personnel and patients
               </p>
             </div>
           </div>
@@ -160,7 +160,7 @@ export const DemoSwitcherModal: React.FC<DemoSwitcherModalProps> = ({ isOpen, on
                           : 'bg-slate-900 text-white hover:bg-slate-800'
                       }`}
                     >
-                      {isActive ? 'Currently Logged In' : `Switch to ${item.name.split(' ')[0]}`}
+                      {isActive ? 'Logged In' : `Login as ${item.name.split(' ')[0]}`}
                     </button>
                   </div>
                 </div>

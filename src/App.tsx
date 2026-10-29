@@ -37,6 +37,10 @@ import { AuditLogsPage } from './pages/AuditLogsPage.tsx';
 import { NotificationsPage } from './pages/NotificationsPage.tsx';
 import { ProfileSettingsPage } from './pages/ProfileSettingsPage.tsx';
 import { AccessDenied } from './pages/AccessDenied.tsx';
+import { AdmissionTrackingPage } from './pages/AdmissionTrackingPage.tsx';
+import { UyirBotChat } from './components/UyirBotChat.tsx';
+import { NotificationAlertSound } from './components/NotificationAlertSound.tsx';
+import { OfflineIndicator } from './components/OfflineIndicator.tsx';
 
 function MainApp() {
   const { user, loading } = useAuth();
@@ -128,6 +132,8 @@ function MainApp() {
         return <CartAndCheckoutPage onNavigate={navigate} />;
       case 'orders':
         return <OrdersPage onNavigate={navigate} />;
+      case 'admission-tracking':
+        return <AdmissionTrackingPage onNavigate={navigate} />;
       case 'courier':
         if (!isCourierOrPharma) return <AccessDenied requiredRole="Delivery Courier Partner" onNavigate={navigate} />;
         return <CourierDashboardPage onNavigate={navigate} />;
@@ -203,6 +209,11 @@ function MainApp() {
           </div>
         </div>
       </footer>
+
+      {/* 24/7 Intelligent Medical Assistant */}
+      <UyirBotChat onNavigate={navigate} />
+      <NotificationAlertSound onNavigate={navigate} />
+      <OfflineIndicator />
     </div>
   );
 }

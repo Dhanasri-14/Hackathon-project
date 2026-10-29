@@ -21,23 +21,32 @@ import { useI18n } from '../i18n.tsx';
 import { apiRequest } from '../api.ts';
 import { DashboardStats, BloodRequest, Order, Prescription } from '../types.ts';
 import { MedicalDisclaimer } from '../components/MedicalDisclaimer.tsx';
+import { EmergencyBroadcastTicker } from '../components/EmergencyBroadcastTicker.tsx';
+import { BloodInventoryBarChart } from '../components/BloodInventoryBarChart.tsx';
+import { ECGPulseWave } from '../components/ECGPulseWave.tsx';
+import { DashboardVoiceAssistantWidget } from '../components/DashboardVoiceAssistantWidget.tsx';
+import { BiometricAuth } from '../components/BiometricAuth.tsx';
+import { Fingerprint, Mic } from 'lucide-react';
 
 export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user, donorInfo, refreshMe } = useAuth();
   const { t, lang } = useI18n();
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [allBloodRequests, setAllBloodRequests] = useState<BloodRequest[]>([]);
   const [recentRequests, setRecentRequests] = useState<BloodRequest[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [pendingPrescriptions, setPendingPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   // Donor availability state
   const [availStatus, setAvailStatus] = useState<string>(donorInfo?.availability_status || 'available');
   const [updatingAvail, setUpdatingAvail] = useState(false);
 
-  const fetchDashboardData = async () => {
-    setLoading(true);
+  const fetchDashboardData = async (silent = false) => {
+    if (!user) return;
+    if (!silent) setLoading(true);
     try {
       const [statsRes, reqsRes, ordersRes] = await Promise.all([
         apiRequest<DashboardStats>('/dashboard/stats'),
@@ -46,6 +55,7 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
       ]);
 
       setStats(statsRes);
+      setAllBloodRequests(reqsRes.requests);
       setRecentRequests(reqsRes.requests.slice(0, 5));
       setRecentOrders(ordersRes.orders.slice(0, 5));
 
@@ -56,12 +66,17 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchDashboardData();
+    // Real-time polling every 15s to update emergency broadcast ticker and network stats
+    const interval = setInterval(() => {
+      fetchDashboardData(true);
+    }, 15000);
+    return () => clearInterval(interval);
   }, [user]);
 
   const handleUpdateAvailability = async (newStatus: string) => {
@@ -113,14 +128,15 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={fetchDashboardData}
+            onClick={() => fetchDashboardData(false)}
             className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition"
             title="Refresh Data"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
+
           {user?.role === 'hospital_staff' && (
             <button
               onClick={() => onNavigate('blood-requests')}
@@ -151,29 +167,75 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
         </div>
       </div>
 
-      {/* Primary KPI Metrics */}
+      {/* Grid: Voice-to-Text Command Widget & Real-Time Biometric Verification Bar */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="lg:col-span-8">
+          <DashboardVoiceAssistantWidget onNavigate={onNavigate} />
+        </div>
+        <div className="lg:col-span-4 p-6 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl flex flex-col justify-between space-y-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <Fingerprint className="w-5 h-5 text-purple-400 animate-pulse" />
+              <span className="text-xs font-black uppercase tracking-wider text-purple-400">
+                Real-Time Biometrics
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-white">
+              Instant WebAuthn Identity Verification
+            </h3>
+            <p className="text-[11px] text-slate-400">
+              Verify TouchID / FaceID locally to authorize critical emergency procedures.
+            </p>
+          </div>
+
+          <BiometricAuth mode="verify" />
+        </div>
+      </div>
+
+      {/* Animation 1: Animated Clinical ECG Cardiac Rhythm Waveform */}
+      <ECGPulseWave
+        bpm={74}
+        label="Clinical Monitoring Sync • Cardiac & Vitals Network Online"
+      />
+
+      {/* Real-time Emergency Broadcast Ticker for Critical Blood Requests */}
+      <EmergencyBroadcastTicker
+        requests={allBloodRequests}
+        onNavigate={onNavigate}
+        onRefresh={() => fetchDashboardData(true)}
+        isRefreshing={loading}
+      />
+
+      {/* Primary KPI Metrics with Luminous Vitality Glow */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-red-50 text-red-600 shrink-0">
+        <div
+          onClick={() => onNavigate('blood-requests')}
+          className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-red-300 transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
+        >
+          <div className="p-3 rounded-2xl bg-red-50 text-red-600 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition duration-300 shrink-0">
             <HeartPulse className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900">
+            <div className="text-2xl font-black text-slate-900 group-hover:text-red-600 transition">
               {stats?.blood.activeRequests ?? 0}
             </div>
             <div className="text-xs font-semibold text-slate-500">Active Blood Requests</div>
-            <div className="text-[11px] text-red-600 font-bold mt-0.5">
-              {stats?.blood.criticalRequests ?? 0} Critical Emergency
+            <div className="text-[11px] text-red-600 font-bold mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>
+              <span>{stats?.blood.criticalRequests ?? 0} Critical Emergency</span>
             </div>
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-rose-50 text-rose-600 shrink-0">
+        <div
+          onClick={() => onNavigate('donors')}
+          className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-rose-300 transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
+        >
+          <div className="p-3 rounded-2xl bg-rose-50 text-rose-600 group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition duration-300 shrink-0">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900">
+            <div className="text-2xl font-black text-slate-900 group-hover:text-rose-600 transition">
               {stats?.blood.availableDonors ?? 0}
             </div>
             <div className="text-xs font-semibold text-slate-500">Available Donors</div>
@@ -183,12 +245,15 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+        <div
+          onClick={() => onNavigate('medicines')}
+          className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
+        >
+          <div className="p-3 rounded-2xl bg-blue-50 text-blue-600 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300 shrink-0">
             <Pill className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900">
+            <div className="text-2xl font-black text-slate-900 group-hover:text-blue-600 transition">
               {stats?.pharmacy.totalMedicines ?? 0}
             </div>
             <div className="text-xs font-semibold text-slate-500">Medicine Inventory</div>
@@ -198,21 +263,30 @@ export const DashboardPage: React.FC<{ onNavigate: (page: string) => void }> = (
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+        <div
+          onClick={() => onNavigate('admission-tracking')}
+          className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
+        >
+          <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition duration-300 shrink-0">
             <Truck className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-900">
+            <div className="text-2xl font-black text-slate-900 group-hover:text-emerald-600 transition">
               {stats?.pharmacy.activeOrders ?? 0}
             </div>
             <div className="text-xs font-semibold text-slate-500">Active Delivery Orders</div>
-            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">
-              {stats?.pharmacy.deliveredOrders ?? 0} Completed
+            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+              <span>{stats?.pharmacy.deliveredOrders ?? 0} Completed • D3 Radar</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Blood Inventory Levels Section (Interactive Bar Chart Visualization) */}
+      <BloodInventoryBarChart
+        levels={stats?.blood.inventoryLevels}
+        onNavigate={onNavigate}
+      />
 
       {/* Donor Role-Specific Quick Widget */}
       {user?.role === 'donor' && (

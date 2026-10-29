@@ -13,12 +13,14 @@ import {
   Truck,
   MapPin,
   Phone,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.tsx';
 import { useI18n } from '../i18n.tsx';
 import { useCart } from '../context/CartContext.tsx';
 import { apiRequest } from '../api.ts';
 import { Prescription } from '../types.ts';
+import { RealPaymentModal } from '../components/RealPaymentModal.tsx';
 
 export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
@@ -37,7 +39,10 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
   const [deliveryAddress, setDeliveryAddress] = useState('Flat 4B, Lotus Apartments, 1st Cross Street, Adyar');
   const [deliveryCity, setDeliveryCity] = useState('Chennai');
   const [deliveryPhone, setDeliveryPhone] = useState(user?.phone || '+91 98406 78901');
-  const [paymentMethod, setPaymentMethod] = useState('Simulated Online Transfer (UPI)');
+  const [paymentMethod, setPaymentMethod] = useState('Secure Online Payment Gateway');
+  const [enteredUtr, setEnteredUtr] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [tempOrderId, setTempOrderId] = useState<string | null>(null);
 
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loadingRx, setLoadingRx] = useState(false);
@@ -92,6 +97,7 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
         delivery_city: deliveryCity,
         delivery_phone: deliveryPhone,
         payment_method: paymentMethod,
+        is_pending_payment: true, // Tell backend to create in pending payment state
       };
 
       const res = await apiRequest<{ orderId: string; status: string }>('/orders', {
@@ -99,13 +105,22 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
         body: JSON.stringify(orderPayload),
       });
 
-      clearCart();
-      onNavigate(`orders/${res.orderId}`);
+      setTempOrderId(res.orderId);
+      setShowPaymentModal(true);
     } catch (err: any) {
-      setError(err.message || 'Checkout failed');
+      setError(err.message || 'Failed to initialize order');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const finalizeOrder = async (utr: string) => {
+    if (!tempOrderId) return;
+    
+    // The payment modal already called /orders/:id/pay on success
+    // So we just need to clear cart and navigate
+    clearCart();
+    onNavigate(`orders/${tempOrderId}`);
   };
 
   if (items.length === 0) {
@@ -314,15 +329,22 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Payment Mode</label>
-              <select
-                value={paymentMethod}
-                onChange={e => setPaymentMethod(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white"
-              >
-                <option value="Simulated Online Transfer (UPI)">Simulated Online Transfer (UPI / NetBanking)</option>
-                <option value="Demo Cash on Delivery">Demo Cash on Delivery (COD)</option>
-              </select>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Payment Method</label>
+              <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-blue-600 text-white">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900">{paymentMethod}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(true)}
+                  className="text-[10px] font-black text-blue-600 uppercase hover:underline"
+                >
+                  Change
+                </button>
+              </div>
             </div>
 
             {/* Price Summary */}
@@ -333,7 +355,7 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Medical Packing & Delivery</span>
-                <span className="text-emerald-600 font-bold">FREE (Demo)</span>
+                <span className="text-emerald-600 font-bold">FREE (Hospital Delivery)</span>
               </div>
               <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-100">
                 <span>Total Amount</span>
@@ -344,12 +366,28 @@ export const CartAndCheckoutPage: React.FC<{ onNavigate: (page: string) => void 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm transition shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {submitting ? 'Verifying & Submitting Order...' : 'Place Medicine Order'}
-              <ArrowRight className="w-4 h-4" />
+              {submitting ? 'Processing Transaction...' : 'Pay & Confirm Order'}
+              <ArrowRight className="w-5 h-5" />
             </button>
           </form>
+
+          {/* Real Payment Modal */}
+          <RealPaymentModal
+            isOpen={showPaymentModal}
+            onClose={() => setShowPaymentModal(false)}
+            orderId={tempOrderId || 'PRE-AUTH'}
+            totalAmount={totalAmount}
+            customerName={user?.full_name}
+            customerPhone={deliveryPhone}
+            deliveryAddress={`${deliveryAddress}, ${deliveryCity}`}
+            onPaymentSuccess={(_ordId, utr) => {
+              setEnteredUtr(utr);
+              setShowPaymentModal(false);
+              finalizeOrder(utr);
+            }}
+          />
         </div>
       </div>
     </div>

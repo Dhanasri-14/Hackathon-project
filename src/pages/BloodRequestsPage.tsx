@@ -18,10 +18,11 @@ import { useI18n } from '../i18n.tsx';
 import { apiRequest } from '../api.ts';
 import { BloodRequest } from '../types.ts';
 import { MedicalDisclaimer } from '../components/MedicalDisclaimer.tsx';
+import { VoiceToTextButton } from '../components/VoiceToTextButton.tsx';
 
 export const BloodRequestsPage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const [requests, setRequests] = useState<BloodRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,6 +119,8 @@ export const BloodRequestsPage: React.FC<{ onNavigate: (page: string) => void }>
         return <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase bg-slate-200 text-slate-700">Standard</span>;
     }
   };
+
+  const voiceLang = lang === 'ta' ? 'ta-IN' : 'en-IN';
 
   return (
     <div className="space-y-6 pb-12">
@@ -334,7 +337,10 @@ export const BloodRequestsPage: React.FC<{ onNavigate: (page: string) => void }>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Patient Name *</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">Patient Name *</label>
+                    <VoiceToTextButton language={voiceLang} onTranscript={setPatientName} />
+                  </div>
                   <input
                     type="text"
                     required
@@ -399,7 +405,10 @@ export const BloodRequestsPage: React.FC<{ onNavigate: (page: string) => void }>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Hospital Name *</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">Hospital Name *</label>
+                    <VoiceToTextButton language={voiceLang} onTranscript={setHospitalName} />
+                  </div>
                   <input
                     type="text"
                     required
@@ -447,13 +456,16 @@ export const BloodRequestsPage: React.FC<{ onNavigate: (page: string) => void }>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Clinical Notes & Surgical Context</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">Clinical Notes & Verbal Context</label>
+                  <VoiceToTextButton language={voiceLang} onTranscript={setClinicalNotes} />
+                </div>
                 <textarea
                   rows={2}
                   value={clinicalNotes}
                   onChange={e => setClinicalNotes(e.target.value)}
                   placeholder="e.g. Scheduled for emergency trauma surgery at 10 PM. Pre-transfusion cross match required."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-red-500 focus:outline-hidden"
                 />
               </div>
 
