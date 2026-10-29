@@ -47,6 +47,7 @@ export interface BloodRequest {
   hospital_locality: string;
   contact_person: string;
   contact_phone: string;
+  requester_email?: string;
   required_by_date: string;
   clinical_notes?: string | null;
   status: 'Submitted' | 'Matching in Progress' | 'Awaiting Donor Response' | 'Under Staff Review' | 'Fulfilled' | 'Cancelled';

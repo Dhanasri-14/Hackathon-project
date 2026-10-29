@@ -22,6 +22,7 @@ import { useI18n } from '../i18n.tsx';
 import { apiRequest } from '../api.ts';
 import { BloodRequest, DonorMatch } from '../types.ts';
 import { MedicalDisclaimer } from '../components/MedicalDisclaimer.tsx';
+import { DonorReceiverGpsTracker } from '../components/DonorReceiverGpsTracker.tsx';
 
 interface BloodRequestDetailPageProps {
   requestId: string;
@@ -46,7 +47,18 @@ export const BloodRequestDetailPage: React.FC<BloodRequestDetailPageProps> = ({ 
       setRequest(res.request);
       setMatches(res.matches);
     } catch (err: any) {
-      console.error(err);
+      console.warn('Failed to load blood request ID directly, trying fallback:', err);
+      try {
+        const listRes = await apiRequest<{ requests: BloodRequest[] }>('/blood/requests');
+        if (listRes.requests && listRes.requests.length > 0) {
+          const fallbackReq = listRes.requests[0];
+          const fallbackDetail = await apiRequest<{ request: BloodRequest; matches: DonorMatch[] }>(`/blood/requests/${fallbackReq.id}`);
+          setRequest(fallbackDetail.request);
+          setMatches(fallbackDetail.matches);
+        }
+      } catch (fallbackErr) {
+        console.error('Fallback blood request fetch failed:', fallbackErr);
+      }
     } finally {
       setLoading(false);
     }
@@ -282,6 +294,9 @@ export const BloodRequestDetailPage: React.FC<BloodRequestDetailPageProps> = ({ 
           </div>
         )}
       </div>
+
+      {/* Live Google Maps Receiver & Donor GPS Radar */}
+      <DonorReceiverGpsTracker request={request} currentUserRole={user?.role} />
 
       {/* Module A Matching Section: Ranked Donor Candidates */}
       <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">

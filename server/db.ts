@@ -186,10 +186,12 @@ function initSchema(db: Database): void {
       reviewer_id TEXT,
       reviewer_notes TEXT,
       reviewed_at TEXT,
+      ai_verification TEXT,
       created_at TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
   `);
+  try { db.run('ALTER TABLE prescriptions ADD COLUMN ai_verification TEXT'); } catch(e) {}
 
   // 7. Orders
   db.run(`
